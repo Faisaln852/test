@@ -30,23 +30,21 @@ class UserController extends Controller
     {
 
 
-            $data=$request->validate([
-                'name'=>['required'],
-                'email'=>['required','email','unique:users'],
-                'password'=>['required','min:8'],
-                'confirm-password'=>['required','same:password']
+        $data = $request->validate([
+            'name' => ['required'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'min:8'],
+            'confirm-password' => ['required', 'same:password']
 
-            ]);
-            $user= new User();
-            $user->name=$request->name;
-            $user->email=$request->email;
-            $user->password=bcrypt($request->password);
-              $user->save();
+        ]);
+        unset($data['confirm-password']);
+        $data['password'] = bcrypt($request->password);
+        User::create($data);
         return redirect()->route('user.success');
-
     }
 
-    public function success(){
+    public function success()
+    {
         return view('user.success');
     }
 
